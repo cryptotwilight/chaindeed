@@ -1,2 +1,2 @@
-# ZK Deed 
-Welcome to the Zero Knowledge Deed (ZK Deed) repository.
+# On Chain Deeds 
+Welcome to the On Chain Deed repository 

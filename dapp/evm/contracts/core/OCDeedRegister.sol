@@ -34,7 +34,7 @@ contract OCDeedRegister is IOCDeedRegister, IOCDVersion {
         _;  
     }
 
-    uint256 constant version = 1; 
+    uint256 constant version = 2; 
     string constant name = "RESERVED_DEED_REGISTER";
 
     string constant OCD_ADMIN = "RESERVED_OCD_ADMIN";
@@ -64,7 +64,6 @@ contract OCDeedRegister is IOCDeedRegister, IOCDVersion {
 
     constructor(address _register) {
         register        = IOCDOpsRegister(_register);
-        chainId         = register.getChainId();
         deedToken       = IOCDeedToken(register.getAddress(DEED_TOKEN));
         feedRegistry    = FeedRegistryInterface(register.getAddress(ERC20_FEED_REGISTRY));
         nftFeedRegistry = IOCDNFTFeedRegistry(register.getAddress(NFT_FEED_REGISTRY));
@@ -74,10 +73,6 @@ contract OCDeedRegister is IOCDeedRegister, IOCDVersion {
 
     function getNameAndVersion() pure external returns (string memory _name, uint256 _version){
         return (name, version);
-    }
-
-    function getChainId() view external returns (uint256 _chainId){   
-        return chainId; 
     }
 
     function getRegisteredDeeds() view external returns (RegisteredDeed[] memory _rDeeds){
@@ -148,7 +143,7 @@ contract OCDeedRegister is IOCDeedRegister, IOCDVersion {
                                                         registrationId : _registrationId,
                                                         issueDate : block.timestamp,   
                                                         valueOnIssueDate : totalValue_,  
-                                                        nativeChainId : chainId,  
+                                                        nativeChainId : register.getChainId(),  
                                                         status : Status.REGISTERED 
                                                     });
        

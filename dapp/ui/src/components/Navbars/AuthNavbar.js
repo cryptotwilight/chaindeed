@@ -125,7 +125,7 @@ export default function AuthNavbar(props) {
           leftIcon={
             <RocketIcon color={navbarIcon} w='12px' h='12px' me='0px' />
           }>
-          <Text>Sign Up</Text>
+          <Text>Connect Wallet</Text>
         </Button>
       </NavLink>
       <NavLink to='/auth/signin'>
@@ -139,7 +139,7 @@ export default function AuthNavbar(props) {
           leftIcon={
             <DocumentIcon color={navbarIcon} w='12px' h='12px' me='0px' />
           }>
-          <Text>Sign In</Text>
+          <Text>Connect Wallet</Text>
         </Button>
       </NavLink>
     </HStack>
@@ -177,19 +177,7 @@ export default function AuthNavbar(props) {
           />
         </Box>
         {linksAuth}
-        <Link href='https://creative-tim.com/product/vision-ui-dashboard-chakra'>
-          <Button
-            fontSize='xs'
-            variant='brand'
-            borderRadius='12px'
-            px='30px'
-            display={{
-              sm: "none",
-              lg: "flex",
-            }}>
-            Free Download
-          </Button>
-        </Link>
+       
       </Flex>
     </Flex>
   );

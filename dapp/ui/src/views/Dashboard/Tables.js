@@ -20,39 +20,171 @@ import React from "react";
 
 // Chakra imports
 import {
-  Flex,
-  Table,
-  Tbody,
-  Icon,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
-
+	Box,
+	Button,
+	CircularProgress,
+	CircularProgressLabel,
+	Flex,
+	Grid,
+	Icon,
+	Input,
+	Select,
+	SelectField,
+	SelectFieldProps,
+	SelectProps,
+	InputGroup,
+	Progress,
+	SimpleGrid,
+	Spacer,
+	Stack,
+	Stat,
+	StatHelpText,
+	StatLabel,
+	StatNumber,
+	Table,
+	Tbody,
+	Text,
+	Th,
+	Thead,
+	Tr
+} from '@chakra-ui/react';
+// Styles for the circular progressbar
+import medusa from 'assets/img/cardimgfree.png';
 // Custom components
 import Card from "components/Card/Card.js";
 import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 
 // Table Components
+import LoanTableRow from "components/Tables/LoanTableRow";
+import CollateralTableRow from "components/Tables/CollateralTableRow";
 import TablesProjectRow from "components/Tables/TablesProjectRow";
 import TablesTableRow from "components/Tables/TablesTableRow";
 
 // Data
 import { tablesProjectData, tablesTableData } from "variables/general";
+import { loanTableData, collateralTableData } from "variables/loans";
 
 // Icons
 import { AiFillCheckCircle } from "react-icons/ai";
-
+import { BsArrowRight } from 'react-icons/bs';
 function Tables() {
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }}>
+      			<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', '2xl': '2fr 2fr' }} my='26px' gap='18px'>
+				{/* Welcome Card */}
+				<Card
+					p='0px'
+					gridArea={{ md: '1 / 1 / 2 / 3', '2xl': 'auto' }}
+					bgImage={medusa}
+					bgSize='cover'
+					bgPosition='50%'>
+					<CardBody w='100%' h='100%'>
+						<Flex flexDirection={{ sm: 'column', lg: 'row' }} w='100%' h='100%'>
+							<Flex flexDirection='column' h='100%' p='22px' minW='60%' lineHeight='1.6'>
+								<Text fontSize='sm' color='gray.400' fontWeight='bold'>
+									Collateral
+								</Text>
+						
+								<Text color='gray.400'>Collateralize Deed to Borrow</Text>
+								
+								
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Select Deed</Text>
+								
+								<Select color='gray.400' placeholder="Select Deed" >
+									<option value='0'>100000 USDC</option>
+									<option value='1'>3 ETH</option>
+									<option value='2'>500000 USDT</option>
+									<option value='3'>40 OCDT</option>
+								</Select>
+		
+								</InputGroup>
+								<Text fontSize='md' color='gray.400'>NOTE: This turns the deed into Collateral</Text>
+
+								<Spacer />
+								<Button>
+									<Text>Collateralize</Text>
+								</Button>
+								
+							</Flex>
+						</Flex>
+					</CardBody>
+				</Card>
+				{/* Deed Card */}
+				<Card
+					p='0px'
+					gridArea={{ md: '1 / 1 / 2 / 3', '2xl': 'auto' }}
+					bgImage={medusa}
+					bgSize='cover'
+					bgPosition='50%'>
+					<CardBody w='100%' h='100%'>
+						<Flex flexDirection={{ sm: 'column', lg: 'row' }} w='100%' h='100%'>
+							<Flex flexDirection='column' h='100%' p='22px' minW='100%' lineHeight='1.6'>
+				
+                <Text fontSize='sm' color='gray.400' fontWeight='bold'>
+									Borrow Tokens
+								</Text>
+								<Spacer />
+                <Text>
+                  Select collateral against which to secure your borrow
+                </Text>
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Collateral</Text>
+								<Select color='gray.400' placeholder="Select Collateral (market value / leanable value)" >
+									<option value='0'>10000 / 7000 USDC</option>
+									<option value='1'>100000 / 70000 USDT</option>
+                  <option value='2'> 3 / 2 ETH</option>
+								</Select>
+								</InputGroup>
+                
+                <Spacer/>
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Borrowing Requirement</Text>
+								<Input fontSize='md'
+										py='11px'
+									    color='gray.400'
+										placeholder='Type here...'
+										borderRadius='inherit'/>
+								</InputGroup>
+                <Spacer/>
+                <InputGroup>
+								<Text  fontSize='md' color='gray.400'>Currency</Text>
+								<Select color='gray.400' placeholder="Select borrow currency" >
+									<option value='0'>USDC</option>
+									<option value='1'>USDT</option>
+                  <option value='2'>ETH</option>
+                  <option value='2'>WBTC</option>
+								</Select>
+								</InputGroup>
+                <Spacer/>
+                <InputGroup>
+								<Text  fontSize='md' color='gray.400'>Term</Text>
+								<Select color='gray.400' placeholder="Select borrow term (months)" >
+									<option value='0'>3</option>
+									<option value='1'>6</option>
+                  <option value='2'>9</option>
+                  <option value='2'>12</option>
+								</Select>
+								</InputGroup>
+								<Button>
+									<Text>Borrow</Text>
+								</Button>
+								
+							
+								<Spacer />
+							
+							</Flex>
+						</Flex>
+					</CardBody>
+				</Card>
+
+			</Grid>
       {/* Authors Table */}
       <Card overflowX={{ sm: "scroll", xl: "hidden" }} pb='0px'>
         <CardHeader p='6px 0px 22px 0px'>
           <Text fontSize='lg' color='#fff' fontWeight='bold'>
-            Authors Table
+            Outstanding Loans
           </Text>
         </CardHeader>
         <CardBody>
@@ -64,41 +196,50 @@ function Tables() {
                   color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
-                  Author
+                 Id
                 </Th>
                 <Th
                   color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
-                  Function
+                  Collateral (Deed Id)
                 </Th>
                 <Th
                   color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
-                  Status
+                  Borrowing
                 </Th>
                 <Th
                   color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
-                  Employed
+                  Balance
                 </Th>
-                <Th borderBottomColor='#56577A'></Th>
+                <Th
+                  color='gray.400'
+                  fontFamily='Plus Jakarta Display'
+                  borderBottomColor='#56577A'>
+                  Currency
+                </Th>
+                <Th
+                  color='gray.400'
+                  fontFamily='Plus Jakarta Display'
+                  borderBottomColor='#56577A'>
+                  Completion Date
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
-              {tablesTableData.map((row, index, arr) => {
+              {loanTableData.map((row, index, arr) => {
                 return (
-                  <TablesTableRow
-                    name={row.name}
-                    logo={row.logo}
-                    email={row.email}
-                    subdomain={row.subdomain}
-                    domain={row.domain}
-                    status={row.status}
-                    date={row.date}
-                    lastItem={index === arr.length - 1 ? true : false}
+                  <LoanTableRow
+                    id={row.id}
+                    deedId={row.deedId}
+                    borrowing={row.borrowing}
+                    balance={row.balance}
+                    currency={row.currency}
+                    completionDate={row.completionDate}
                   />
                 );
               })}
@@ -111,7 +252,7 @@ function Tables() {
         <CardHeader p='6px 0px 22px 0px'>
           <Flex direction='column'>
             <Text fontSize='lg' color='#fff' fontWeight='bold' mb='.5rem'>
-              Projects Table
+              Collateral 
             </Text>
             <Flex align='center'>
               <Icon
@@ -139,39 +280,43 @@ function Tables() {
                   color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
-                  Companies
+                  Collateral Id
                 </Th>
                 <Th
                   color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
-                  Budget
+                  Deed Id
                 </Th>
                 <Th
                   color='gray.400'
+                  fontFamily='Plus Jakarta Display'
+                  borderBottomColor='#56577A'>
+                  Market Value
+                </Th>
+                <Th
+                  color='gray.400'
+                  fontFamily='Plus Jakarta Display'
+                  borderBottomColor='#56577A'>
+                  Leanable Value
+                </Th>
+                <Th color='gray.400'
                   fontFamily='Plus Jakarta Display'
                   borderBottomColor='#56577A'>
                   Status
                 </Th>
-                <Th
-                  color='gray.400'
-                  fontFamily='Plus Jakarta Display'
-                  borderBottomColor='#56577A'>
-                  Completion
-                </Th>
-                <Th borderBottomColor='#56577A'></Th>
+                
               </Tr>
             </Thead>
             <Tbody>
-              {tablesProjectData.map((row, index, arr) => {
+              {collateralTableData.map((row, index, arr) => {
                 return (
-                  <TablesProjectRow
-                    name={row.name}
-                    logo={row.logo}
+                  <CollateralTableRow
+                    id={row.id}
+                    deedId={row.deedId}
+                    marketValue={row.marketValue}
+                    leanableValue={row.leanableValue}
                     status={row.status}
-                    budget={row.budget}
-                    progression={row.progression}
-                    lastItem={index === arr.length - 1 ? true : false}
                   />
                 );
               })}

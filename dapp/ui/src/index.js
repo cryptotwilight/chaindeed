@@ -19,12 +19,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+import { MetaMaskProvider } from '@metamask/sdk-react';
 
 import AuthLayout from "layouts/Auth.js";
 import AdminLayout from "layouts/Admin.js";
 import RTLLayout from "layouts/RTL.js";
 
+
+
 ReactDOM.render(
+  <MetaMaskProvider debug={false} sdkOptions={{
+    checkInstallationImmediately: false,
+    dappMetadata: {
+      name: "On Chain Deeds [On Mode]",
+      url: window.location.host,
+    }
+  }}>
   <HashRouter>
     <Switch>
       <Route path={`/auth`} component={AuthLayout} />
@@ -32,6 +42,7 @@ ReactDOM.render(
       <Route path={`/rtl`} component={RTLLayout} />
       <Redirect from={`/`} to='/admin/dashboard' />
     </Switch>
-  </HashRouter>,
+  </HashRouter>
+  </MetaMaskProvider>,
   document.getElementById("root")
 );

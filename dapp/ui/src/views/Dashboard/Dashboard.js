@@ -24,6 +24,12 @@ import {
 	Flex,
 	Grid,
 	Icon,
+	Input,
+	Select,
+	SelectField,
+	SelectFieldProps,
+	SelectProps,
+	InputGroup,
 	Progress,
 	SimpleGrid,
 	Spacer,
@@ -45,28 +51,88 @@ import medusa from 'assets/img/cardimgfree.png';
 import Card from 'components/Card/Card.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardHeader from 'components/Card/CardHeader.js';
-import BarChart from 'components/Charts/BarChart';
-import LineChart from 'components/Charts/LineChart';
 import IconBox from 'components/Icons/IconBox';
 // Icons
 import { CartIcon, DocumentIcon, GlobeIcon, RocketIcon, StatsIcon, WalletIcon } from 'components/Icons/Icons.js';
-import DashboardTableRow from 'components/Tables/DashboardTableRow';
-import TimelineRow from 'components/Tables/TimelineRow';
-import React from 'react';
+import DeedTableRow from 'components/Tables/DeedTableRow';
+
+import React, { useEffect, useState } from 'react';
 import { AiFillCheckCircle } from 'react-icons/ai';
-import { BiHappy } from 'react-icons/bi';
+
 import { BsArrowRight } from 'react-icons/bs';
 import { IoCheckmarkDoneCircleSharp, IoEllipsisHorizontal } from 'react-icons/io5';
 // Data
-import {
-	barChartDataDashboard,
-	barChartOptionsDashboard,
-	lineChartDataDashboard,
-	lineChartOptionsDashboard
-} from 'variables/charts';
-import { dashboardTableData, timelineData } from 'variables/general';
 
-export default function Dashboard() {
+import { deedTableData } from 'variables/deeds';
+import { ethers, Contract, JsonRpcSigner, JsonRpcApiProvider } from 'ethers';
+
+import { iOcdOpsRegisterAbi } from 'abi/IocdOpsRegister';
+import { iOcdDeedRegisterAbi } from 'abi/IocdDeedRegister';
+
+const opsRegisterAddress = "0xF95eE8d9661c928c782d61914C5533dbEA7DbDF3"; 
+
+var iOcdOpsRegister;
+var deedRegisterAddress; 
+var iOcdDeedRegister;
+var deeds = []; 
+var deedIds; 
+var signer;
+var provider;
+
+function addAndApprove( ){
+}
+
+function switchAsset() { 
+	if(asset == 'ERC721'){
+
+	}
+	if(asset == 'ERC20'){
+
+	}
+}
+
+async function runInitialization() {
+	iOcdOpsRegister = new Contract(opsRegisterAddress, iOcdOpsRegisterAbi, signer);
+	deedRegisterAddress = await iOcdOpsRegister.getAddress("RESERVED_DEED_REGISTER");
+	deedRegisterAddress = "0x87fAc5e603A67014Bd1C60Cc597F3f7C9703978b";
+	iOcdDeedRegister = new Contract(deedRegisterAddress, iOcdDeedRegisterAbi, signer);
+	deedIds = await iOcdDeedRegister.getDeedOwnerIds();
+	for(var x = 0; x < deedIds.length; x++){
+		deeds[x] = await iOcdDeedRegister.getRegisteredDeed(deedIds[x]); 
+		console.log(d.registrationId);
+	}
+	this.setState({Deeds : deeds})
+	console.log("Deeds " + deeds);
+}
+
+export default async function Dashboard() {
+	if (window.ethereum == null) {
+	
+		// If MetaMask is not installed, we use the default provider,
+		// which is backed by a variety of third-party services (such
+		// as INFURA). They do not have private keys installed,
+		// so they only have read-only access
+		console.log("MetaMask not installed; using read-only defaults")
+		provider = ethers.getDefaultProvider()
+	
+	} 
+	else {
+	
+		// Connect to the MetaMask EIP-1193 object. This is a standard
+		// protocol that allows Ethers access to make all read-only
+		// requests through MetaMask.
+		provider = new ethers.BrowserProvider(window.ethereum)
+	
+		// It also provides an opportunity to request access to write
+		// operations, which will be performed by the private key
+		// that MetaMask manages for the user.
+		signer = await provider.getSigner();
+		await runInitialization();
+
+	}
+
+
+
 	return (
 		<Flex flexDirection='column' pt={{ base: '120px', md: '75px' }}>
 			<SimpleGrid columns={{ sm: 1, md: 2, xl: 4 }} spacing='24px'>
@@ -192,7 +258,7 @@ export default function Dashboard() {
 					</CardBody>
 				</Card>
 			</SimpleGrid>
-			<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', '2xl': '2fr 1.2fr 1.5fr' }} my='26px' gap='18px'>
+			<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', '2xl': '2fr 2fr' }} my='26px' gap='18px'>
 				{/* Welcome Card */}
 				<Card
 					p='0px'
@@ -206,14 +272,33 @@ export default function Dashboard() {
 								<Text fontSize='sm' color='gray.400' fontWeight='bold'>
 									Welcome back,
 								</Text>
-								<Text fontSize='28px' color='#fff' fontWeight='bold' mb='18px'>
-									Mark Johnson
+								<Text fontSize='sm' color='gray.400' fontWeight='bold'>
+									Create New Deed
 								</Text>
-								<Text fontSize='md' color='gray.400' fontWeight='normal' mb='auto'>
-									Glad to see you again! <br />
-									Ask me anything.
-								</Text>
+								<Text color='gray.400'>To Create a New deed select the denomination of your deed</Text>
+								
+								
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Deed Denomination</Text>
+								
+								<Select color='gray.400' placeholder="Select Cryptocurrency Denomination">
+									<option value='USDC'>USDC</option>
+									<option value='ETH'>ETH</option>
+									<option value='USDT'>USDT</option>
+									<option value='OCDT'>OCDT</option>
+								</Select>
+							
+								<Button> 
+									<Text>Create Deed </Text>
+								</Button>
+								
+								</InputGroup>
+								<Text fontSize='md' color='gray.400'>NOTE: This deed is not on the blockchain</Text>
+
 								<Spacer />
+								<Button>
+									<Text>Register Deed</Text>
+								</Button>
 								<Flex align='center'>
 									<Button
 										p='0px'
@@ -248,271 +333,65 @@ export default function Dashboard() {
 						</Flex>
 					</CardBody>
 				</Card>
-				{/* Satisfaction Rate */}
-				<Card gridArea={{ md: '2 / 1 / 3 / 2', '2xl': 'auto' }}>
-					<CardHeader mb='24px'>
-						<Flex direction='column'>
-							<Text color='#fff' fontSize='lg' fontWeight='bold' mb='4px'>
-								Satisfaction Rate
-							</Text>
-							<Text color='gray.400' fontSize='sm'>
-								From all projects
-							</Text>
-						</Flex>
-					</CardHeader>
-					<Flex direction='column' justify='center' align='center'>
-						<Box zIndex='-1'>
-							<CircularProgress
-								size={200}
-								value={80}
-								thickness={6}
-								color='#582CFF'
-								variant='vision'
-								rounded>
-								<CircularProgressLabel>
-									<IconBox mb='20px' mx='auto' bg='brand.200' borderRadius='50%' w='48px' h='48px'>
-										<Icon as={BiHappy} color='#fff' w='30px' h='30px' />
-									</IconBox>
-								</CircularProgressLabel>
-							</CircularProgress>
-						</Box>
-						<Stack
-							direction='row'
-							spacing={{ sm: '42px', md: '68px' }}
-							justify='center'
-							maxW={{ sm: '270px', md: '300px', lg: '100%' }}
-							mx={{ sm: 'auto', md: '0px' }}
-							p='18px 22px'
-							bg='linear-gradient(126.97deg, rgb(6, 11, 40) 28.26%, rgba(10, 14, 35) 91.2%)'
-							borderRadius='20px'
-							position='absolute'
-							bottom='5%'>
-							<Text fontSize='xs' color='gray.400'>
-								0%
-							</Text>
-							<Flex direction='column' align='center' minW='80px'>
-								<Text color='#fff' fontSize='28px' fontWeight='bold'>
-									95%
+				{/* Deed Card */}
+				<Card
+					p='0px'
+					gridArea={{ md: '1 / 1 / 2 / 3', '2xl': 'auto' }}
+					bgImage={medusa}
+					bgSize='cover'
+					bgPosition='50%'>
+					<CardBody w='100%' h='100%'>
+						<Flex flexDirection={{ sm: 'column', lg: 'row' }} w='100%' h='100%'>
+							<Flex flexDirection='column' h='100%' p='22px' minW='100%' lineHeight='1.6'>
+				
+								
+								<Spacer />
+								<Text fontSize='sm' color='gray.400' fontWeight='bold'>
+									Add Deed Asset
 								</Text>
-								<Text fontSize='xs' color='gray.400'>
-									Based on likes
-								</Text>
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Asset Type</Text>
+								<Select color='gray.400' placeholder="Select Cryptocurrency Denomination" onChange={newText => setAsset(newText)} >
+									<option value='ERC721'>NFT</option>
+									<option value='ERC20'>Cryptocurrency</option>
+								</Select>
+								</InputGroup>
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Asset Contract</Text>
+								<Input fontSize='md'
+										py='11px'
+									    color='gray.400'
+										placeholder='Type here...'
+										borderRadius='inherit'/>
+								</InputGroup>
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Id on Asset Contract</Text>
+								<Input fontSize='md'
+										py='11px'
+									    color='gray.400'
+										placeholder='Type here...'
+										borderRadius='inherit'/>
+								</InputGroup>
+								<InputGroup>
+								<Text  fontSize='md' color='gray.400'>Asset Amount</Text>
+								<Input fontSize='md'
+										py='11px'
+									    color='gray.400'
+										placeholder='Type here...'
+										borderRadius='inherit'/>
+								</InputGroup>
+								<Button onClick={addAndApprove()}>
+									<Text>Approve Deed Register & Add To Deed</Text>
+								</Button>
+								
+							
+								<Spacer />
+							
 							</Flex>
-							<Text fontSize='xs' color='gray.400'>
-								100%
-							</Text>
-						</Stack>
-					</Flex>
-				</Card>
-				{/* Referral Tracking */}
-				<Card gridArea={{ md: '2 / 2 / 3 / 3', '2xl': 'auto' }}>
-					<Flex direction='column'>
-						<Flex justify='space-between' align='center' mb='40px'>
-							<Text color='#fff' fontSize='lg' fontWeight='bold'>
-								Referral Tracking
-							</Text>
-							<Button borderRadius='12px' w='38px' h='38px' bg='#22234B' _hover='none' _active='none'>
-								<Icon as={IoEllipsisHorizontal} color='#7551FF' />
-							</Button>
-						</Flex>
-						<Flex direction={{ sm: 'column', md: 'row' }}>
-							<Flex direction='column' me={{ md: '6px', lg: '52px' }} mb={{ sm: '16px', md: '0px' }}>
-								<Flex
-									direction='column'
-									p='22px'
-									pe={{ sm: '22e', md: '8px', lg: '22px' }}
-									minW={{ sm: '220px', md: '140px', lg: '220px' }}
-									bg='linear-gradient(126.97deg, #060C29 28.26%, rgba(4, 12, 48, 0.5) 91.2%)'
-									borderRadius='20px'
-									mb='20px'>
-									<Text color='gray.400' fontSize='sm' mb='4px'>
-										Invited
-									</Text>
-									<Text color='#fff' fontSize='lg' fontWeight='bold'>
-										145 people
-									</Text>
-								</Flex>
-								<Flex
-									direction='column'
-									p='22px'
-									pe={{ sm: '22px', md: '8px', lg: '22px' }}
-									minW={{ sm: '170px', md: '140px', lg: '170px' }}
-									bg='linear-gradient(126.97deg, #060C29 28.26%, rgba(4, 12, 48, 0.5) 91.2%)'
-									borderRadius='20px'>
-									<Text color='gray.400' fontSize='sm' mb='4px'>
-										Bonus
-									</Text>
-									<Text color='#fff' fontSize='lg' fontWeight='bold'>
-										1,465
-									</Text>
-								</Flex>
-							</Flex>
-							<Box mx={{ sm: 'auto', md: '0px' }}>
-								<CircularProgress
-									size={window.innerWidth >= 1024 ? 200 : window.innerWidth >= 768 ? 170 : 200}
-									value={70}
-									thickness={6}
-									color='#05CD99'
-									variant='vision'>
-									<CircularProgressLabel>
-										<Flex direction='column' justify='center' align='center'>
-											<Text color='gray.400' fontSize='sm'>
-												Safety
-											</Text>
-											<Text
-												color='#fff'
-												fontSize={{ md: '36px', lg: '50px' }}
-												fontWeight='bold'
-												mb='4px'>
-												9.3
-											</Text>
-											<Text color='gray.400' fontSize='sm'>
-												Total Score
-											</Text>
-										</Flex>
-									</CircularProgressLabel>
-								</CircularProgress>
-							</Box>
-						</Flex>
-					</Flex>
-				</Card>
-			</Grid>
-			<Grid
-				templateColumns={{ sm: '1fr', lg: '1.7fr 1.3fr' }}
-				maxW={{ sm: '100%', md: '100%' }}
-				gap='24px'
-				mb='24px'>
-				{/* Sales Overview */}
-				<Card p='28px 0px 0px 0px'>
-					<CardHeader mb='20px' ps='22px'>
-						<Flex direction='column' alignSelf='flex-start'>
-							<Text fontSize='lg' color='#fff' fontWeight='bold' mb='6px'>
-								Sales Overview
-							</Text>
-							<Text fontSize='md' fontWeight='medium' color='gray.400'>
-								<Text as='span' color='green.400' fontWeight='bold'>
-									(+5%) more
-								</Text>{' '}
-								in 2021
-							</Text>
-						</Flex>
-					</CardHeader>
-					<Box w='100%' minH={{ sm: '300px' }}>
-						<LineChart
-							lineChartData={lineChartDataDashboard}
-							lineChartOptions={lineChartOptionsDashboard}
-						/>
-					</Box>
-				</Card>
-				{/* Active Users */}
-				<Card p='16px'>
-					<CardBody>
-						<Flex direction='column' w='100%'>
-							<Box
-								bg='linear-gradient(126.97deg, #060C29 28.26%, rgba(4, 12, 48, 0.5) 91.2%)'
-								borderRadius='20px'
-								display={{ sm: 'flex', md: 'block' }}
-								justify={{ sm: 'center', md: 'flex-start' }}
-								align={{ sm: 'center', md: 'flex-start' }}
-								minH={{ sm: '180px', md: '220px' }}
-								p={{ sm: '0px', md: '22px' }}>
-								<BarChart
-									barChartOptions={barChartOptionsDashboard}
-									barChartData={barChartDataDashboard}
-								/>
-							</Box>
-							<Flex direction='column' mt='24px' mb='36px' alignSelf='flex-start'>
-								<Text fontSize='lg' color='#fff' fontWeight='bold' mb='6px'>
-									Active Users
-								</Text>
-								<Text fontSize='md' fontWeight='medium' color='gray.400'>
-									<Text as='span' color='green.400' fontWeight='bold'>
-										(+23%)
-									</Text>{' '}
-									than last week
-								</Text>
-							</Flex>
-							<SimpleGrid gap={{ sm: '12px' }} columns={4}>
-								<Flex direction='column'>
-									<Flex alignItems='center'>
-										<IconBox as='box' h={'30px'} w={'30px'} bg='brand.200' me='6px'>
-											<WalletIcon h={'15px'} w={'15px'} color='#fff' />
-										</IconBox>
-										<Text fontSize='sm' color='gray.400'>
-											Users
-										</Text>
-									</Flex>
-									<Text
-										fontSize={{ sm: 'md', lg: 'lg' }}
-										color='#fff'
-										fontWeight='bold'
-										mb='6px'
-										my='6px'>
-										32,984
-									</Text>
-									<Progress colorScheme='brand' bg='#2D2E5F' borderRadius='30px' h='5px' value={20} />
-								</Flex>
-								<Flex direction='column'>
-									<Flex alignItems='center'>
-										<IconBox as='box' h={'30px'} w={'30px'} bg='brand.200' me='6px'>
-											<RocketIcon h={'15px'} w={'15px'} color='#fff' />
-										</IconBox>
-										<Text fontSize='sm' color='gray.400'>
-											Clicks
-										</Text>
-									</Flex>
-									<Text
-										fontSize={{ sm: 'md', lg: 'lg' }}
-										color='#fff'
-										fontWeight='bold'
-										mb='6px'
-										my='6px'>
-										2.42m
-									</Text>
-									<Progress colorScheme='brand' bg='#2D2E5F' borderRadius='30px' h='5px' value={90} />
-								</Flex>
-								<Flex direction='column'>
-									<Flex alignItems='center'>
-										<IconBox as='box' h={'30px'} w={'30px'} bg='brand.200' me='6px'>
-											<CartIcon h={'15px'} w={'15px'} color='#fff' />
-										</IconBox>
-										<Text fontSize='sm' color='gray.400'>
-											Sales
-										</Text>
-									</Flex>
-									<Text
-										fontSize={{ sm: 'md', lg: 'lg' }}
-										color='#fff'
-										fontWeight='bold'
-										mb='6px'
-										my='6px'>
-										2,400$
-									</Text>
-									<Progress colorScheme='brand' bg='#2D2E5F' borderRadius='30px' h='5px' value={30} />
-								</Flex>
-								<Flex direction='column'>
-									<Flex alignItems='center'>
-										<IconBox as='box' h={'30px'} w={'30px'} bg='brand.200' me='6px'>
-											<StatsIcon h={'15px'} w={'15px'} color='#fff' />
-										</IconBox>
-										<Text fontSize='sm' color='gray.400'>
-											Items
-										</Text>
-									</Flex>
-									<Text
-										fontSize={{ sm: 'md', lg: 'lg' }}
-										color='#fff'
-										fontWeight='bold'
-										mb='6px'
-										my='6px'>
-										320
-									</Text>
-									<Progress colorScheme='brand' bg='#2D2E5F' borderRadius='30px' h='5px' value={50} />
-								</Flex>
-							</SimpleGrid>
 						</Flex>
 					</CardBody>
 				</Card>
+
 			</Grid>
 			<Grid templateColumns={{ sm: '1fr', md: '1fr 1fr', lg: '2fr 1fr' }} gap='24px'>
 				{/* Projects */}
@@ -520,7 +399,7 @@ export default function Dashboard() {
 					<CardHeader p='12px 0px 28px 0px'>
 						<Flex direction='column'>
 							<Text fontSize='lg' color='#fff' fontWeight='bold' pb='8px'>
-								Projects
+								Your Deeds
 							</Text>
 							<Flex align='center'>
 								<Icon as={IoCheckmarkDoneCircleSharp} color='teal.300' w={4} h={4} pe='3px' />
@@ -541,29 +420,27 @@ export default function Dashboard() {
 									color='gray.400'
 									fontFamily='Plus Jakarta Display'
 									borderBottomColor='#56577A'>
-									Companies
+									Deed Id
 								</Th>
 								<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
-									Members
+									Denomination
 								</Th>
 								<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
-									Budget
+									Vault
 								</Th>
 								<Th color='gray.400' fontFamily='Plus Jakarta Display' borderBottomColor='#56577A'>
-									Completion
+									Value
 								</Th>
 							</Tr>
 						</Thead>
 						<Tbody>
-							{dashboardTableData.map((row, index, arr) => {
+							{sdeeds.map((row, index, arr) => {
 								return (
-									<DashboardTableRow
-										name={row.name}
-										logo={row.logo}
-										members={row.members}
-										budget={row.budget}
-										progression={row.progression}
-										lastItem={index === arr.length - 1 ? true : false}
+									<DeedTableRow
+										registrationId={row.registrationId}
+										deedDenomination={row.deedDenomination}
+										vault={row.vault}
+										valueOnIssueDate={row.valueOnIssueDate}
 									/>
 								);
 							})}
@@ -575,7 +452,7 @@ export default function Dashboard() {
 					<CardHeader mb='32px'>
 						<Flex direction='column'>
 							<Text fontSize='lg' color='#fff' fontWeight='bold' mb='6px'>
-								Orders overview
+								Deed Data
 							</Text>
 							<Flex align='center'>
 								<Icon as={AiFillCheckCircle} color='green.500' w='15px' h='15px' me='5px' />
@@ -590,18 +467,7 @@ export default function Dashboard() {
 					</CardHeader>
 					<CardBody>
 						<Flex direction='column' lineHeight='21px'>
-							{timelineData.map((row, index, arr) => {
-								return (
-									<TimelineRow
-										logo={row.logo}
-										title={row.title}
-										date={row.date}
-										color={row.color}
-										index={index}
-										arrLength={arr.length}
-									/>
-								);
-							})}
+					
 						</Flex>
 					</CardBody>
 				</Card>

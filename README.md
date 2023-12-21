@@ -10,7 +10,7 @@ This creates a brand new DeFi paradigm that enables users to leverage assets pre
 
 The On chain Deed project is currently premiering on the Mode Network. 
 
-## Deployment 
+## Mode Deployment 
 For notes on deployment see:
 [Deployment](dapp/evm/deploy/README.md)
 

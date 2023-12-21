@@ -52,7 +52,7 @@ import {
   olderTransactions,
 } from "variables/general";
 
-function Billing() {
+function Investments() {
 
   return (
     <Flex direction='column' pt={{ base: "120px", md: "75px" }} mx='auto'>
@@ -65,7 +65,60 @@ function Billing() {
             }}
             gap='26px'>
               {/* Mastercard */}
-              <Card>
+            <Card
+              backgroundImage={BackgroundCard1}
+              backgroundRepeat='no-repeat'
+              bgSize='cover'
+              bgPosition='10%'
+              p='16px'>
+              <CardBody h='100%' w='100%'>
+                <Flex
+                  direction='column'
+                  color='white'
+                  h='100%'
+                  p='0px 10px 20px 10px'
+                  w='100%'>
+                  <Flex justify='space-between' align='center'>
+                    <Text fontSize='md' fontWeight='bold'>
+                      Vision UI
+                    </Text>
+                    <Icon
+                      as={RiMastercardFill}
+                      w='48px'
+                      h='auto'
+                      color='gray.400'
+                    />
+                  </Flex>
+                  <Spacer />
+                  <Flex direction='column'>
+                    <Box>
+                      <Text
+                        fontSize={{ sm: "xl", lg: "lg", xl: "xl" }}
+                        letterSpacing='2px'
+                        fontWeight='bold'>
+                        7812 2139 0823 XXXX
+                      </Text>
+                    </Box>
+                    <Flex mt='14px'>
+                      <Flex direction='column' me='34px'>
+                        <Text fontSize='xs'>VALID THRU</Text>
+                        <Text fontSize='xs' fontWeight='bold'>
+                          05/24
+                        </Text>
+                      </Flex>
+                      <Flex direction='column'>
+                        <Text fontSize='xs'>CVV</Text>
+                        <Text fontSize='xs' fontWeight='bold'>
+                          09X
+                        </Text>
+                      </Flex>
+                    </Flex>
+                  </Flex>
+                </Flex>
+              </CardBody>
+            </Card>
+            {/* Credit Balance */}
+            <Card>
               <Flex direction='column'>
                 <Flex
                   justify='space-between'
@@ -75,14 +128,29 @@ function Billing() {
                   borderRadius='18px'>
                   <Flex direction='column'>
                     <Text color='#E9EDF7' fontSize='12px'>
-                      Earnings To Date
+                      Credit Balance
                     </Text>
                     <Text color='#fff' fontWeight='bold' fontSize='34px'>
                       $25,215
                     </Text>
                   </Flex>
                   <Flex direction='column'>
-
+                    <Button
+                      bg='transparent'
+                      _hover='none'
+                      _active='none'
+                      alignSelf='flex-end'
+                      p='0px'>
+                      <Icon
+                        as={IoEllipsisHorizontalSharp}
+                        color='#fff'
+                        w='24px'
+                        h='24px'
+                        justifySelf='flex-start'
+                        alignSelf='flex-start'
+                      />
+                    </Button>
+                    <GraphIcon w='60px' h='18px' />
                   </Flex>
                 </Flex>
                 <Text fontSize='10px' color='gray.400' mb='8px'>
@@ -109,58 +177,6 @@ function Billing() {
                   </Flex>
                   <Text color='#fff' fontSize='sm' fontWeight='bold'>
                     -$154.50
-                  </Text>
-                </Flex>
-              </Flex>
-            </Card>
-            {/* Credit Balance */}
-            <Card>
-              <Flex direction='column'>
-                <Flex
-                  justify='space-between'
-                  p='22px'
-                  mb='18px'
-                  bg='linear-gradient(127.09deg, rgba(34, 41, 78, 0.94) 19.41%, rgba(10, 14, 35, 0.49) 76.65%)'
-                  borderRadius='18px'>
-                  <Flex direction='column'>
-                    <Text color='#E9EDF7' fontSize='12px'>
-                      Investment Balance
-                    </Text>
-                    <Text color='#fff' fontWeight='bold' fontSize='34px'>
-                      $2,215,567
-                    </Text>
-                  </Flex>
-                  <Flex direction='column'>
-
-                  </Flex>
-                </Flex>
-                <Text fontSize='10px' color='gray.400' mb='8px'>
-                  NEWEST
-                </Text>
-                <Flex justify='space-between' align='center'>
-                  <Flex align='center'>
-                    <IconBox
-                      bg='#22234B'
-                      borderRadius='30px'
-                      w='42px'
-                      h='42px'
-                      me='10px'>
-                      <BillIcon w='22px' h='22px' />
-                    </IconBox>
-                    <Flex direction='column'>
-                      <Text color='#fff' fontSize='sm' mb='2px'>
-                        Next Exit
-                      </Text>
-                      <Text color='gray.400' fontSize='sm'>
-                        Today, 16:36
-                      </Text>
-                    </Flex>
-                  </Flex>
-                  <Text color='#fff' fontSize='sm' fontWeight='bold'>
-                    Earnings : $15,045.50 
-                  </Text>
-                  <Text color='#fff' fontSize='sm' fontWeight='bold'>
-                    Investment : $1,096,898 
                   </Text>
                 </Flex>
               </Flex>
@@ -218,25 +234,6 @@ function Billing() {
                     </Button>
                   </Flex>
                 </GradientBorder>
-              </Flex>
-            </CardBody>
-          </Card>
-          <Card p='16px' mt='24px'>
-            <CardHeader>
-              <Flex
-                justify='space-between'
-                align='center'
-                minHeight='60px'
-                w='100%'>
-                <Text fontSize='lg' color='#fff' fontWeight='bold'>
-                  Payment Method
-                </Text>
-                <Button maxW='135px' fontSize='10px' variant='brand'>
-                  ADD A NEW CARD
-                </Button>
-              </Flex>
-            </CardHeader>
-            <CardBody>
                 <GradientBorder w='100%' borderRadius='20px'>
                   <Flex
                     p='22px'
@@ -262,6 +259,7 @@ function Billing() {
                     </Button>
                   </Flex>
                 </GradientBorder>
+              </Flex>
             </CardBody>
           </Card>
         </Box>
@@ -276,7 +274,7 @@ function Billing() {
               align='center'
               mb='1rem'
               w='100%'
-              mb='28px'>
+              >
               <Text fontSize='lg' color='#fff' fontWeight='bold'>
                 Invoices
               </Text>
@@ -306,9 +304,97 @@ function Billing() {
           </CardBody>
         </Card>
       </Grid>
-   
+      <Grid templateColumns={{ sm: "1fr", lg: "60% 38%" }}>
+        {/* Billing Information */}
+        <Card my={{ lg: "24px" }} me={{ lg: "24px" }}>
+          <Flex direction='column'>
+            <CardHeader py='12px'>
+              <Text color='#fff' fontSize='lg' fontWeight='bold'>
+                Billing Information
+              </Text>
+            </CardHeader>
+            <CardBody>
+              <Flex direction='column' w='100%'>
+                {billingData.map((row) => {
+                  return (
+                    <BillingRow
+                      name={row.name}
+                      company={row.company}
+                      email={row.email}
+                      number={row.number}
+                    />
+                  );
+                })}
+              </Flex>
+            </CardBody>
+          </Flex>
+        </Card>
+        {/* Transactions List */}
+        <Card my='24px' ms={{ lg: "24px" }}>
+          <CardHeader mb='12px'>
+            <Flex direction='column' w='100%'>
+              <Flex
+                direction={{ sm: "column", lg: "row" }}
+                justify={{ sm: "center", lg: "space-between" }}
+                align={{ sm: "center" }}
+                w='100%'
+                my={{ md: "12px" }}>
+                <Text
+                  color='#fff'
+                  fontSize={{ sm: "lg", md: "xl", lg: "lg" }}
+                  fontWeight='bold'>
+                  Your Transactions
+                </Text>
+                <Flex align='center'>
+                  <Icon
+                    as={FaRegCalendarAlt}
+                    color='gray.400'
+                    w='15px'
+                    h='15px'
+                   
+                    me='6px'
+                  />
+                  <Text color='gray.400' fontSize='sm'>
+                    23 - 30 March 2021
+                  </Text>
+                </Flex>
+              </Flex>
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Flex direction='column' w='100%'>
+              <Text color='gray.400' fontSize='xs' mb='18px'>
+                NEWEST
+              </Text>
+              {newestTransactions.map((row) => {
+                return (
+                  <TransactionRow
+                    name={row.name}
+                    logo={row.logo}
+                    date={row.date}
+                    price={row.price}
+                  />
+                );
+              })}
+              <Text color='gray.400' fontSize='xs' my='18px'>
+                OLDER
+              </Text>
+              {olderTransactions.map((row) => {
+                return (
+                  <TransactionRow
+                    name={row.name}
+                    logo={row.logo}
+                    date={row.date}
+                    price={row.price}
+                  />
+                );
+              })}
+            </Flex>
+          </CardBody>
+        </Card>
+      </Grid>
     </Flex>
   );
 }
 
-export default Billing;
+export default Investments;

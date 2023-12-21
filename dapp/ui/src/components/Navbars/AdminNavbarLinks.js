@@ -27,6 +27,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import routes from "routes.js";
+import { useSDK } from '@metamask/sdk-react';
 
 export default function HeaderLinks(props) {
   const { variant, children, fixed, secondary, onOpen, ...rest } = props;
@@ -42,6 +43,30 @@ export default function HeaderLinks(props) {
     mainText = "white";
   }
   const settingsRef = React.useRef();
+  const [account, setAccount] = React.useState();
+	const { sdk, connected, connecting, provider, chainId } = useSDK();
+  
+	const connect = async () => {
+    if(connected){
+      try {
+        sdk.disconnect();
+        setAccount("");
+      }   
+      catch(err) {
+        console.warn(`failed to disconnect..`, err);
+      }
+    }
+    else {
+      try {
+        const accounts = await sdk?.connect();
+        setAccount(accounts?.[0]);
+  
+      } catch(err) {
+        console.warn(`failed to connect..`, err);
+      }
+    }
+	};
+
   return (
     <Flex
       pe={{ sm: "0px", md: "16px" }}
@@ -85,7 +110,21 @@ export default function HeaderLinks(props) {
           borderRadius='inherit'
         />
       </InputGroup>
-      <NavLink to='/auth/signin'>
+
+          {connected && (
+            <div>
+              
+              <>
+              <Text  fontSize='sm' color='gray.400'>
+                {chainId && `Connected chain: ${chainId}`}
+                <p></p>
+                {account && `Connected account: ${account}`}
+                </Text>
+              </>
+              
+            </div>
+          )}
+     
         <Button
           ms='0px'
           px='0px'
@@ -105,10 +144,10 @@ export default function HeaderLinks(props) {
             ) : (
               ""
             )
-          }>
-          <Text display={{ sm: "none", md: "flex" }}>Connect</Text>
+          } onClick={connect}>
+          <Text display={{ sm: "none", md: "flex" }}>{connected? 'Disconnect Metamask' : 'Connect Metamask'}</Text>
         </Button>
-      </NavLink>
+      
       <SidebarResponsive
         iconColor='gray.500'
         logoText={props.logoText}

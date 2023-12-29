@@ -10,6 +10,17 @@ This creates a brand new DeFi paradigm that enables users to leverage assets pre
 
 The On chain Deed project is currently premiering on the Mode Network. 
 
+## Conceptual Overview 
+This video describes at a conceptual level how the On Chain Deeds protocol works. [On Chain Deeds Conceptual Overview](https://www.loom.com/share/a56a1ec342c94fe1b55af6053514976f)
+
+### Degen Demo
+This is demo is for those true DeFi Degens who are happy to work with raw blockchain data. 
+[]()
+
+### UI Demo 
+This demo is for normal users who need to use a normal UI
+[]()
+
 ## Mode Deployment 
 For notes on deployment see:
 [Deployment](dapp/evm/deploy/README.md)
@@ -17,3 +28,49 @@ For notes on deployment see:
 ## UI 
 For notes on UI see: 
 [UI](dapp/ui/README.md)
+
+## How to Test 
+To test the live deployment of the On Chain Deeds project the following steps need to be followed.
+There are two types of test, the Degen Test approach and the UI Test approach. 
+
+### Degen Test Approach 
+The Degen test approach utilises the raw block explorer to work with the On Chain Deeds blockchain smart contracts hence will give you more functionality. However this is for medium to advanced users. 
+
+1. Ensure you have some kind of assets e.g. cryptocurrency / nfts in your wallet. 
+2. Approve the deed register on the contracts for your assets. This is done on the block explorer by going to: [https://sepolia.explorer.mode.network/address/{your token contract address}](https://sepolia.explorer.mode.network/address/) 
+    -> you then go to the "Write Contract" and enter the address of the deed register which can be found from the OCD Ops Register [here](https://sepolia.explorer.mode.network/address/0x2A18AE7AdB76DbC40F961c92F461b1c370D33ddd)
+3. You then need to create a deed according to the format below: 
+    [
+        "(your wallet address - replace)",
+        [
+            ["(id of your nft - replace)", 
+             "(address of nft contract - replace)", 
+             "1", 
+             "1"
+            ], *<- format for NFT assets*
+            ["0", 
+             "(address of erc20 token contract - replace)", 
+             "(number of tokens committed to your deed - replace remember to add zeros)", 
+             "0"
+            ], *<- format for Cryptocurrency assets*
+            ... *<- a deed can hold up to 10 assets*
+        ],
+        "address of contract for cryptocurrency denomination of your deed - replace"
+    ]
+
+    below is an example 
+
+    [  
+        "0xC1436aD1dAc368a81AF38E25Faf4cCe8872B2746",
+        [
+            ["0","0x83b3286A15A4197981eEE90d1007ce480fE37BeB","1","1"], 
+            ["0","0x379405A108A6206C030e4Ad6fC6983FBCA39cb0C","50000000000000000000","0"],
+            ["0","0x71696C45Add5198C1E333bAe5aABC84D41c73c0c","20000000000000000000000","0"],
+            ["0","0xbE2B750edc108637abe59b4B8CfC498E632830d7","300000000000000000","0"]
+        ],
+        "0x379405A108A6206C030e4Ad6fC6983FBCA39cb0C"
+    ]
+    for testing purposes you can self mint test tokens using the following token contracts 
+    -> [0x9a9bb529659fd3157Df551109bD0D0542868ED4A](https://sepolia.explorer.mode.network/address/0x9a9bb529659fd3157Df551109bD0D0542868ED4A?tab=write_contract) - for Test NFTs
+    -> [0xA1252b783d76974855a8649c2eF4478Bee96cfB1](https://sepolia.explorer.mode.network/address/0xA1252b783d76974855a8649c2eF4478Bee96cfB1?tab=write_contract) - for Test Cryptocurrency
+4. You then need to paste your above deed as (as a single line) in the deed register contract 
